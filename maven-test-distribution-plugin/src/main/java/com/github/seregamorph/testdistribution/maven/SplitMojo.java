@@ -1,10 +1,5 @@
 package com.github.seregamorph.testdistribution.maven;
 
-import com.fasterxml.jackson.core.PrettyPrinter;
-import com.fasterxml.jackson.core.util.DefaultIndenter;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.github.seregamorph.testdistribution.DistributionProvider;
 import com.github.seregamorph.testdistribution.SimpleDistributionProvider;
 import org.apache.maven.artifact.Artifact;
@@ -53,22 +48,22 @@ public class SplitMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.testOutputDirectory}")
     private File testClassesDirectory;
 
-    @Parameter(required = true, property = "testdistribution.includes")
+    @Parameter(required = true, property = "testDistribution.includes")
     private List<String> includes;
 
-    @Parameter(property = "testdistribution.excludes")
+    @Parameter(property = "testDistribution.excludes")
     private List<String> excludes;
 
-    @Parameter(property = "testdistribution.initialSort")
+    @Parameter(property = "testDistribution.initialSort")
     private boolean initialSort = true;
 
-    @Parameter(property = "testdistribution.distributionProvider")
+    @Parameter(property = "testDistribution.distributionProvider")
     private String distributionProvider = SimpleDistributionProvider.class.getName();
 
-    @Parameter(required = true, property = "testdistribution.testGroupName")
+    @Parameter(required = true, property = "testDistribution.testGroupName")
     private String testGroupName;
 
-    @Parameter(required = true, property = "testdistribution.numGroups")
+    @Parameter(required = true, property = "testDistribution.numGroups")
     private int numGroups;
 
     @Override
@@ -97,20 +92,17 @@ public class SplitMojo extends AbstractMojo {
             List<String> testClasses = testClassesGroups.get(i);
             String groupName = testGroupName + "-" + (i + 1);
             getLog().info("Test group " + groupName + ": " + testClasses);
-            testGroups.add(new TestGroupEntity().setName(groupName).setTestClasses(testClasses));
+            testGroups.add(new TestGroupEntity()
+                    .setName(groupName)
+                    .setTestClasses(testClasses));
         }
         TestDistributionEntity entity = new TestDistributionEntity()
                 .setDistributionProvider(distributionProvider)
                 .setNumGroups(numGroups)
                 .setGroups(testGroups);
 
-        ObjectMapper mapper = createObjectMapper();
         File testDistributionFile = new File(buildDir, "test-distribution-" + testGroupName + ".json");
-        try {
-            mapper.writeValue(testDistributionFile, entity);
-        } catch (IOException e) {
-            throw new UncheckedIOException("Error while generating " + testDistributionFile, e);
-        }
+        JsonUtils.writeEntity(testDistributionFile, entity);
     }
 
     private List<List<String>> splitTestClasses(Collection<URL> urls, List<String> classes, int numGroups) throws MojoExecutionException {
@@ -144,19 +136,6 @@ public class SplitMojo extends AbstractMojo {
     private DefaultScanResult scanTestClassesDirectory() {
         DirectoryScanner scanner = new DirectoryScanner(testClassesDirectory, new TestListResolver(includes, excludes));
         return scanner.scan();
-    }
-
-    private static ObjectMapper createObjectMapper() {
-        return new ObjectMapper()
-                .enable(SerializationFeature.INDENT_OUTPUT)
-                .setDefaultPrettyPrinter(createPrettyPrinter());
-    }
-
-    private static PrettyPrinter createPrettyPrinter() {
-        DefaultPrettyPrinter prettyPrinter = new DefaultPrettyPrinter();
-        DefaultPrettyPrinter.Indenter indenter = new DefaultIndenter("  ", DefaultIndenter.SYS_LF);
-        prettyPrinter.indentArraysWith(indenter);
-        return prettyPrinter;
     }
 
     private static URL url(File file) {
