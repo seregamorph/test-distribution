@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Simple distribution generator which splits original list to N groups.
+ * Simple distribution provider which splits original list to N groups.
  *
  * @author Sergey Chernov
  */
