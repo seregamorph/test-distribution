@@ -94,11 +94,10 @@ public class SplitMojo extends AbstractMojo {
         // todo support fork option
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
         try (URLClassLoader classLoader = new URLClassLoader(urls.toArray(new URL[0]))) {
-            Class<? extends DistributionProvider> distributionGeneratorClass =
-                    classLoader.loadClass(distributionGenerator).asSubclass(DistributionProvider.class);
+            Class<?> distributionGeneratorClass = classLoader.loadClass(distributionGenerator);
             Method splitMethod = distributionGeneratorClass.getMethod("split", List.class, int.class);
             Thread.currentThread().setContextClassLoader(classLoader);
-            DistributionProvider distributionProvider = distributionGeneratorClass.getConstructor().newInstance();
+            Object distributionProvider = distributionGeneratorClass.getConstructor().newInstance();
             //noinspection unchecked
             return (List<List<String>>) splitMethod.invoke(distributionProvider, classes, numGroups);
         } finally {
