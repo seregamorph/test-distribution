@@ -2,6 +2,9 @@ package com.github.seregamorph.testdistribution;
 
 import java.util.List;
 
+/**
+ * @author Sergey Chernov
+ */
 public interface DistributionProvider {
 
     /**

@@ -5,6 +5,8 @@ import java.util.List;
 
 /**
  * Simple distribution generator which splits original list to N groups.
+ *
+ * @author Sergey Chernov
  */
 public class SimpleDistributionProvider implements DistributionProvider {
 
