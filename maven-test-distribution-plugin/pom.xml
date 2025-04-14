@@ -11,8 +11,8 @@
     <artifactId>maven-test-distribution-plugin</artifactId>
     <packaging>maven-plugin</packaging>
     <description>
-        Plugin which splits test classes in suite according to grouping rule and instructs surefire/failsafe plugin
-        to accordingly filter classes part
+        Plugin which splits test classes in the test suite according to grouping rule and
+        instructs surefire/failsafe plugin to accordingly filter classes part
     </description>
 
     <build>
@@ -23,7 +23,7 @@
                 <configuration>
                     <goalPrefix>test-distribution</goalPrefix>
                 </configuration>
-            </plugin><plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><configuration><source>8</source><target>8</target></configuration></plugin>
+            </plugin>
         </plugins>
     </build>
 
