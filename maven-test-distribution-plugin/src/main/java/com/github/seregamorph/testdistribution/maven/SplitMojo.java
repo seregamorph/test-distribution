@@ -65,8 +65,8 @@ public class SplitMojo extends AbstractMojo {
     @Parameter(property = "testdistribution.distributionProvider")
     private String distributionProvider = SimpleDistributionProvider.class.getName();
 
-    @Parameter(required = true, property = "testdistribution.groupNamePrefix")
-    private String groupNamePrefix;
+    @Parameter(required = true, property = "testdistribution.testGroupName")
+    private String testGroupName;
 
     @Parameter(required = true, property = "testdistribution.numGroups")
     private int numGroups;
@@ -95,7 +95,7 @@ public class SplitMojo extends AbstractMojo {
         List<TestGroupEntity> testGroups = new ArrayList<>();
         for (int i = 0; i < testClassesGroups.size(); i++) {
             List<String> testClasses = testClassesGroups.get(i);
-            String groupName = groupNamePrefix + (i + 1);
+            String groupName = testGroupName + "-" + (i + 1);
             getLog().info("Test group " + groupName + ": " + testClasses);
             testGroups.add(new TestGroupEntity().setName(groupName).setTestClasses(testClasses));
         }
@@ -105,7 +105,7 @@ public class SplitMojo extends AbstractMojo {
                 .setGroups(testGroups);
 
         ObjectMapper mapper = createObjectMapper();
-        File testDistributionFile = new File(buildDir, "test-distribution.json");
+        File testDistributionFile = new File(buildDir, "test-distribution-" + testGroupName + ".json");
         try {
             mapper.writeValue(testDistributionFile, entity);
         } catch (IOException e) {
