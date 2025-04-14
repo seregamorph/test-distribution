@@ -11,7 +11,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
  * @author Sergey Chernov
  */
 @Mojo(
-        name = "filterIntegrationTest",
+        name = "filter-integration-test",
         requiresDependencyResolution = ResolutionScope.TEST,
         defaultPhase = LifecyclePhase.PRE_INTEGRATION_TEST,
         threadSafe = true)
