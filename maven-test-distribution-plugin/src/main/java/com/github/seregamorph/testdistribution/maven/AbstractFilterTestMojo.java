@@ -33,9 +33,19 @@ public abstract class AbstractFilterTestMojo extends AbstractMojo {
         TestDistributionEntity entity = JsonUtils.readEntity(testDistributionFile);
         TestGroupEntity testGroup = entity.getGroups().get(groupNumber - 1);
         List<String> testClasses = testGroup.getTestClasses();
-        getLog().info("Filtering test group " + testGroup.getName() + ": " + testClasses);
-        project.getProperties().put(getPropertyName(), String.join(",", testClasses));
+        String projectName = project.getGroupId() + ":" + project.getArtifactId();
+        getLog().info("Filtering test group " + projectName + " " + testGroup.getName() + ": "
+                + (testClasses.isEmpty() ? "none" : testClasses));
+
+        String testFilter = String.join(",", testClasses);
+        if (testFilter.isEmpty()) {
+            // Empty property is ignored, so we need to either define null value, or use "skipTests" or "skipITs".
+            // The problem with these properties is that "skipTests" affects both surefire and failsafe plugins,
+            // which may be undesired behaviour.
+            testFilter = "none";
+        }
+        project.getProperties().put(getTestFilterPropertyName(), testFilter);
     }
 
-    abstract String getPropertyName();
+    abstract String getTestFilterPropertyName();
 }

@@ -18,7 +18,7 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 public class FilterTestMojo extends AbstractFilterTestMojo {
 
     @Override
-    String getPropertyName() {
+    String getTestFilterPropertyName() {
         return "test";
     }
 }
