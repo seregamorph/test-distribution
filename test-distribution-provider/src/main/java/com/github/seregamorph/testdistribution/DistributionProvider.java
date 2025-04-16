@@ -3,6 +3,8 @@ package com.github.seregamorph.testdistribution;
 import java.util.List;
 
 /**
+ * Test distribution provider implements logic of test suite classes split.
+ *
  * @author Sergey Chernov
  */
 public interface DistributionProvider {
