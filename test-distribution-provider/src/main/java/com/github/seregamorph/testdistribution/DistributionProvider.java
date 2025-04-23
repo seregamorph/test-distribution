@@ -10,11 +10,11 @@ import java.util.List;
 public interface DistributionProvider {
 
     /**
-     * Distribute test classes to groups. Each subgroup should preserve original order of test classes.
+     * Distribute test classes to groups. Each subgroup should preserve the original order of test classes.
      *
-     * @param testClasses
-     * @param numGroups
+     * @param testClassNames
+     * @param parameters
      * @return list of size numGroups containing subsets of original testClasses
      */
-    List<List<String>> split(List<String> testClasses, int numGroups);
+    List<List<String>> split(List<String> testClassNames, TestDistributionParameters parameters);
 }

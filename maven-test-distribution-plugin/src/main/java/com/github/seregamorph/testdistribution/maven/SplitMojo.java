@@ -2,6 +2,7 @@ package com.github.seregamorph.testdistribution.maven;
 
 import com.github.seregamorph.testdistribution.DistributionProvider;
 import com.github.seregamorph.testdistribution.SimpleDistributionProvider;
+import com.github.seregamorph.testdistribution.TestDistributionParameters;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -17,7 +18,6 @@ import org.apache.maven.surefire.api.util.DefaultScanResult;
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -25,7 +25,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * This goal splits module test classes according to chosen {@link DistributionProvider}.
+ * This goal splits module test classes according to chosen {@link DistributionProvider} and writes the distribution
+ * to the JSON file in the build directory.
  *
  * @author Sergey Chernov
  */
@@ -105,16 +106,17 @@ public class SplitMojo extends AbstractMojo {
         JsonUtils.writeEntity(testDistributionFile, entity);
     }
 
-    private List<List<String>> splitTestClasses(Collection<URL> urls, List<String> classes, int numGroups) throws MojoExecutionException {
+    private List<List<String>> splitTestClasses(Collection<URL> urls, List<String> testClasses, int numGroups) throws MojoExecutionException {
         // todo support fork option
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-        try (URLClassLoader classLoader = new URLClassLoader(urls.toArray(new URL[0]))) {
-            Class<?> distributionProviderClass = classLoader.loadClass(distributionProvider);
-            Method splitMethod = distributionProviderClass.getMethod("split", List.class, int.class);
+        ClassLoader pluginClassLoader = SplitMojo.class.getClassLoader();
+        try (URLClassLoader classLoader = new URLClassLoader(urls.toArray(new URL[0]), pluginClassLoader)) {
+            Class<? extends DistributionProvider> distributionProviderClass = classLoader.loadClass(distributionProvider).asSubclass(DistributionProvider.class);
+
             Thread.currentThread().setContextClassLoader(classLoader);
-            Object distributionProvider = distributionProviderClass.getConstructor().newInstance();
-            //noinspection unchecked
-            return (List<List<String>>) splitMethod.invoke(distributionProvider, classes, numGroups);
+            DistributionProvider distributionProvider = distributionProviderClass.getConstructor().newInstance();
+            TestDistributionParameters parameters = new TestDistributionParameters(numGroups);
+            return distributionProvider.split(testClasses, parameters);
         } catch (IOException | ReflectiveOperationException e) {
             throw new MojoExecutionException("Failed to split test classes", e);
         } finally {

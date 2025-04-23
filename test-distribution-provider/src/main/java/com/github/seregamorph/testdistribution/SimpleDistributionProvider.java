@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Simple distribution provider which splits original list to N groups.
+ * Simple distribution provider which splits the original list to N groups.
  *
  * @author Sergey Chernov
  */
 public class SimpleDistributionProvider implements DistributionProvider {
 
     @Override
-    public List<List<String>> split(List<String> testClasses, int numGroups) {
+    public List<List<String>> split(List<String> testClasses, TestDistributionParameters parameters) {
+        int numGroups = parameters.getNumGroups();
         if (numGroups < 1) {
             throw new IllegalArgumentException("Number of groups must be greater than 0, passed: " + numGroups);
         }
