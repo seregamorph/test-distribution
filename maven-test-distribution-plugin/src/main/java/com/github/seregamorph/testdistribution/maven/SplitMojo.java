@@ -80,6 +80,11 @@ public class SplitMojo extends AbstractMojo {
             return;
         }
 
+        if (!"jar".equals(project.getPackaging())) {
+            getLog().info("Test distribution split is only supported for jar packaging");
+            return;
+        }
+
         if (includes.isEmpty()) {
             throw new MojoExecutionException("Plugin configuration should declare `includes` parameter with class name filtering");
         }

@@ -36,6 +36,11 @@ public abstract class AbstractFilterTestMojo extends AbstractMojo {
             return;
         }
 
+        if (!"jar".equals(project.getPackaging())) {
+            getLog().info("Test distribution filtering is only supported for jar packaging");
+            return;
+        }
+
         File testDistributionFile = new File(buildDir, "test-distribution-" + testGroupName + ".json");
         getLog().info("Reading test distribution file: " + testDistributionFile);
         TestDistributionEntity entity = JsonUtils.readEntity(testDistributionFile);
