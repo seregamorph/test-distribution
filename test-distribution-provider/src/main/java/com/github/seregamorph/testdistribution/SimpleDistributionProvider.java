@@ -1,6 +1,7 @@
 package com.github.seregamorph.testdistribution;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,14 +23,27 @@ public class SimpleDistributionProvider implements DistributionProvider {
         if (mod > 0) {
             groupSize++;
         }
+        if (groupSize < parameters.getMinGroupSize()) {
+            groupSize = parameters.getMinGroupSize();
+        }
 
         // this distribution always starts from the first bucket
         List<List<String>> groups = new ArrayList<>();
         for (int i = 0; i < numGroups; i++) {
-            groups.add(testClasses.subList(i * groupSize, Math.min((i + 1) * groupSize, testClasses.size())));
+            int fromInclusive = i * groupSize;
+            int toExclusive = (i + 1) * groupSize;
+            if (toExclusive > testClasses.size()) {
+                toExclusive = testClasses.size();
+            }
+            if (fromInclusive < toExclusive) {
+                groups.add(testClasses.subList(fromInclusive, toExclusive));
+            } else {
+                groups.add(Collections.emptyList());
+            }
         }
 
-        int bucketOffset = parameters.getModuleBucket();
+        // this distribution always shifts the first bucket
+        int bucketOffset = parameters.getModuleShift();
         List<List<String>> result = new ArrayList<>();
         result.addAll(groups.subList(bucketOffset, groups.size()));
         result.addAll(groups.subList(0, bucketOffset));

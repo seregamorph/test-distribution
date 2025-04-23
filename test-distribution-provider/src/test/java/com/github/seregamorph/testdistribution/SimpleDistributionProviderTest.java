@@ -11,14 +11,25 @@ class SimpleDistributionProviderTest {
     private static final DistributionProvider DISTRIBUTION_PROVIDER = new SimpleDistributionProvider();
 
     @Test
-    public void shouldSplit() {
-        assertEquals(list(list()), DISTRIBUTION_PROVIDER.split(list(), parameters(1)));
-        assertEquals(list(list(), list()), DISTRIBUTION_PROVIDER.split(list(), parameters(2)));
-        assertEquals(list(list("test1"), list()), DISTRIBUTION_PROVIDER.split(list("test1"), parameters(2)));
-        assertEquals(list(list("test1"), list("test2")), DISTRIBUTION_PROVIDER.split(list("test1", "test2"), parameters(2)));
-        assertEquals(list(list("test1", "test2"), list("test3")), DISTRIBUTION_PROVIDER.split(list("test1", "test2", "test3"), parameters(2)));
-        assertEquals(list(list("test2"), list("test3"), list("test1")), DISTRIBUTION_PROVIDER.split(list("test1", "test2", "test3"), parameters(3)));
-        assertEquals(list(list("test3"), list(), list("test1"), list("test2")), DISTRIBUTION_PROVIDER.split(list("test1", "test2", "test3"), parameters(4)));
+    public void shouldSplitMinSize1() {
+        assertEquals(list(list()), DISTRIBUTION_PROVIDER.split(list(), params1(1)));
+        assertEquals(list(list(), list()), DISTRIBUTION_PROVIDER.split(list(), params1(2)));
+        assertEquals(list(list("test1"), list()), DISTRIBUTION_PROVIDER.split(list("test1"), params1(2)));
+        assertEquals(list(list("test1"), list("test2")), DISTRIBUTION_PROVIDER.split(list("test1", "test2"), params1(2)));
+        assertEquals(list(list("test1", "test2"), list("test3")), DISTRIBUTION_PROVIDER.split(list("test1", "test2", "test3"), params1(2)));
+        assertEquals(list(list("test2"), list("test3"), list("test1")), DISTRIBUTION_PROVIDER.split(list("test1", "test2", "test3"), params1(3)));
+        assertEquals(list(list("test3"), list(), list("test1"), list("test2")), DISTRIBUTION_PROVIDER.split(list("test1", "test2", "test3"), params1(4)));
+    }
+
+    @Test
+    public void shouldSplitMinSize2() {
+        assertEquals(list(list()), DISTRIBUTION_PROVIDER.split(list(), params3(1)));
+        assertEquals(list(list(), list()), DISTRIBUTION_PROVIDER.split(list(), params3(2)));
+        assertEquals(list(list("test1"), list()), DISTRIBUTION_PROVIDER.split(list("test1"), params3(2)));
+        assertEquals(list(list("test1", "test2"), list()), DISTRIBUTION_PROVIDER.split(list("test1", "test2"), params3(2)));
+        assertEquals(list(list("test1", "test2", "test3"), list()), DISTRIBUTION_PROVIDER.split(list("test1", "test2", "test3"), params3(2)));
+        assertEquals(list(list(), list(), list("test1", "test2", "test3")), DISTRIBUTION_PROVIDER.split(list("test1", "test2", "test3"), params3(3)));
+        assertEquals(list(list(), list(), list("test1", "test2", "test3"), list()), DISTRIBUTION_PROVIDER.split(list("test1", "test2", "test3"), params3(4)));
     }
 
     @SafeVarargs
@@ -26,7 +37,11 @@ class SimpleDistributionProviderTest {
         return List.of(elements);
     }
 
-    private static TestDistributionParameters parameters(int numGroups) {
-        return new TestDistributionParameters(numGroups, "test");
+    private static TestDistributionParameters params1(int numGroups) {
+        return new TestDistributionParameters(numGroups, "test", 1);
+    }
+
+    private static TestDistributionParameters params3(int numGroups) {
+        return new TestDistributionParameters(numGroups, "test", 3);
     }
 }

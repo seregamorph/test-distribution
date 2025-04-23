@@ -67,6 +67,9 @@ public class SplitMojo extends AbstractMojo {
     @Parameter(required = true, property = "testDistribution.numGroups")
     private int numGroups;
 
+    @Parameter(property = "testDistribution.minGroupSize")
+    private int minGroupSize = 1;
+
     @Override
     public void execute() throws MojoExecutionException {
         if (includes.isEmpty()) {
@@ -87,7 +90,7 @@ public class SplitMojo extends AbstractMojo {
         if (initialSort) {
             Collections.sort(classes);
         }
-        TestDistributionParameters parameters = new TestDistributionParameters(numGroups, getModuleName());
+        TestDistributionParameters parameters = new TestDistributionParameters(numGroups, getModuleName(), minGroupSize);
         List<List<String>> testClassesGroups = splitTestClasses(urls, classes, parameters);
         List<TestGroupEntity> testGroups = new ArrayList<>();
         for (int i = 0; i < testClassesGroups.size(); i++) {
