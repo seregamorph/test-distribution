@@ -12,16 +12,21 @@ class SimpleDistributionProviderTest {
 
     @Test
     public void shouldSplit() {
-        assertEquals(List.of(List.of()), DISTRIBUTION_PROVIDER.split(List.of(), parameters(1)));
-        assertEquals(List.of(List.of(), List.of()), DISTRIBUTION_PROVIDER.split(List.of(), parameters(2)));
-        assertEquals(List.of(List.of("test1"), List.of()), DISTRIBUTION_PROVIDER.split(List.of("test1"), parameters(2)));
-        assertEquals(List.of(List.of("test1"), List.of("test2")), DISTRIBUTION_PROVIDER.split(List.of("test1", "test2"), parameters(2)));
-        assertEquals(List.of(List.of("test1", "test2"), List.of("test3")), DISTRIBUTION_PROVIDER.split(List.of("test1", "test2", "test3"), parameters(2)));
-        assertEquals(List.of(List.of("test1"), List.of("test2"), List.of("test3")), DISTRIBUTION_PROVIDER.split(List.of("test1", "test2", "test3"), parameters(3)));
-        assertEquals(List.of(List.of("test1"), List.of("test2"), List.of("test3"), List.of()), DISTRIBUTION_PROVIDER.split(List.of("test1", "test2", "test3"), parameters(4)));
+        assertEquals(list(list()), DISTRIBUTION_PROVIDER.split(list(), parameters(1)));
+        assertEquals(list(list(), list()), DISTRIBUTION_PROVIDER.split(list(), parameters(2)));
+        assertEquals(list(list("test1"), list()), DISTRIBUTION_PROVIDER.split(list("test1"), parameters(2)));
+        assertEquals(list(list("test1"), list("test2")), DISTRIBUTION_PROVIDER.split(list("test1", "test2"), parameters(2)));
+        assertEquals(list(list("test1", "test2"), list("test3")), DISTRIBUTION_PROVIDER.split(list("test1", "test2", "test3"), parameters(2)));
+        assertEquals(list(list("test2"), list("test3"), list("test1")), DISTRIBUTION_PROVIDER.split(list("test1", "test2", "test3"), parameters(3)));
+        assertEquals(list(list("test3"), list(), list("test1"), list("test2")), DISTRIBUTION_PROVIDER.split(list("test1", "test2", "test3"), parameters(4)));
+    }
+
+    @SafeVarargs
+    private static <T> List<T> list(T... elements) {
+        return List.of(elements);
     }
 
     private static TestDistributionParameters parameters(int numGroups) {
-        return new TestDistributionParameters(numGroups);
+        return new TestDistributionParameters(numGroups, "test");
     }
 }

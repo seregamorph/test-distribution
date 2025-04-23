@@ -87,7 +87,8 @@ public class SplitMojo extends AbstractMojo {
         if (initialSort) {
             Collections.sort(classes);
         }
-        List<List<String>> testClassesGroups = splitTestClasses(urls, classes, numGroups);
+        TestDistributionParameters parameters = new TestDistributionParameters(numGroups, getModuleName());
+        List<List<String>> testClassesGroups = splitTestClasses(urls, classes, parameters);
         List<TestGroupEntity> testGroups = new ArrayList<>();
         for (int i = 0; i < testClassesGroups.size(); i++) {
             List<String> testClasses = testClassesGroups.get(i);
@@ -106,7 +107,7 @@ public class SplitMojo extends AbstractMojo {
         JsonUtils.writeEntity(testDistributionFile, entity);
     }
 
-    private List<List<String>> splitTestClasses(Collection<URL> urls, List<String> testClasses, int numGroups) throws MojoExecutionException {
+    private List<List<String>> splitTestClasses(Collection<URL> urls, List<String> testClasses, TestDistributionParameters parameters) throws MojoExecutionException {
         // todo support fork option
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
         ClassLoader pluginClassLoader = SplitMojo.class.getClassLoader();
@@ -115,13 +116,16 @@ public class SplitMojo extends AbstractMojo {
 
             Thread.currentThread().setContextClassLoader(classLoader);
             DistributionProvider distributionProvider = distributionProviderClass.getConstructor().newInstance();
-            TestDistributionParameters parameters = new TestDistributionParameters(numGroups);
             return distributionProvider.split(testClasses, parameters);
         } catch (IOException | ReflectiveOperationException e) {
             throw new MojoExecutionException("Failed to split test classes", e);
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
+    }
+
+    private String getModuleName() {
+        return project.getGroupId() + ":" + project.getArtifactId();
     }
 
     private List<URL> getClasspathUrls() {

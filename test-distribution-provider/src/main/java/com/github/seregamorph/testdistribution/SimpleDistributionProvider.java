@@ -23,10 +23,17 @@ public class SimpleDistributionProvider implements DistributionProvider {
             groupSize++;
         }
 
-        List<List<String>> result = new ArrayList<>();
+        // this distribution always starts from the first bucket
+        List<List<String>> groups = new ArrayList<>();
         for (int i = 0; i < numGroups; i++) {
-            result.add(testClasses.subList(i * groupSize, Math.min((i + 1) * groupSize, testClasses.size())));
+            groups.add(testClasses.subList(i * groupSize, Math.min((i + 1) * groupSize, testClasses.size())));
         }
+
+        int bucketOffset = parameters.getModuleBucket();
+        List<List<String>> result = new ArrayList<>();
+        result.addAll(groups.subList(bucketOffset, groups.size()));
+        result.addAll(groups.subList(0, bucketOffset));
+
         return result;
     }
 }
