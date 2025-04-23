@@ -49,6 +49,9 @@ public class SplitMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.testOutputDirectory}")
     private File testClassesDirectory;
 
+    @Parameter(property = "testDistribution.split.skip")
+    private boolean skip = false;
+
     @Parameter(required = true, property = "testDistribution.includes")
     private List<String> includes;
 
@@ -72,6 +75,11 @@ public class SplitMojo extends AbstractMojo {
 
     @Override
     public void execute() throws MojoExecutionException {
+        if (skip) {
+            getLog().info("Skipping test classes distribution");
+            return;
+        }
+
         if (includes.isEmpty()) {
             throw new MojoExecutionException("Plugin configuration should declare `includes` parameter with class name filtering");
         }

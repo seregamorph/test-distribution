@@ -8,11 +8,14 @@ import java.io.File;
 import java.util.List;
 
 /**
- * The basic goal reads generated test distribution part and applies according filtering property.
+ * The basic goal reads the generated test distribution part and applies according filtering property.
  *
  * @author Sergey Chernov
  */
 public abstract class AbstractFilterTestMojo extends AbstractMojo {
+
+    @Parameter(property = "testDistribution.filter.skip")
+    private boolean skip = false;
 
     @Parameter(defaultValue = "${project}", required = true)
     private MavenProject project;
@@ -28,6 +31,11 @@ public abstract class AbstractFilterTestMojo extends AbstractMojo {
 
     @Override
     public void execute() {
+        if (skip) {
+            getLog().info("Skipping test distribution filtering");
+            return;
+        }
+
         File testDistributionFile = new File(buildDir, "test-distribution-" + testGroupName + ".json");
         getLog().info("Reading test distribution file: " + testDistributionFile);
         TestDistributionEntity entity = JsonUtils.readEntity(testDistributionFile);
