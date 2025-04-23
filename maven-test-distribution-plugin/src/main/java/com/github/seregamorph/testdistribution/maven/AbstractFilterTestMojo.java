@@ -39,13 +39,14 @@ public abstract class AbstractFilterTestMojo extends AbstractMojo {
 
         String testFilter = String.join(",", testClasses);
         if (testFilter.isEmpty()) {
-            // Empty property is ignored, so we need to either define null value, or use "skipTests" or "skipITs".
-            // The problem with these properties is that "skipTests" affects both surefire and failsafe plugins,
-            // which may be undesired behaviour.
-            testFilter = "none";
+            // Empty property is ignored, so we need to use "skipTests" or "skipITs"
+            project.getProperties().put(getSkipTestPropertyName(), "true");
+        } else {
+            project.getProperties().put(getTestFilterPropertyName(), testFilter);
         }
-        project.getProperties().put(getTestFilterPropertyName(), testFilter);
     }
 
     abstract String getTestFilterPropertyName();
+
+    abstract String getSkipTestPropertyName();
 }

@@ -21,4 +21,9 @@ public class FilterTestMojo extends AbstractFilterTestMojo {
     String getTestFilterPropertyName() {
         return "test";
     }
+
+    @Override
+    String getSkipTestPropertyName() {
+        return "skipTests";
+    }
 }
