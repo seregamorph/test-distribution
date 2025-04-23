@@ -102,6 +102,7 @@ public class SplitMojo extends AbstractMojo {
                     .setTestClasses(testClasses));
         }
         TestDistributionEntity entity = new TestDistributionEntity()
+                .setModuleName(getModuleName())
                 .setDistributionProvider(distributionProvider)
                 .setNumGroups(numGroups)
                 .setGroups(testGroups);
