@@ -104,17 +104,22 @@ public class SplitMojo extends AbstractMojo {
         DefaultScanResult scanResult = scanTestClassesDirectory();
 
         Collection<URL> urls = getClasspathUrls();
-        List<String> classes = new ArrayList<>(scanResult.getClasses());
+        List<String> testClassNames = new ArrayList<>(scanResult.getClasses());
+        if (testClassNames.isEmpty()) {
+            getLog().info("No matching test classes found in " + testClassesDirectory);
+        }
         if (initialSort) {
-            Collections.sort(classes);
+            Collections.sort(testClassNames);
         }
         TestDistributionParameters parameters = new TestDistributionParameters(numGroups, getModuleName(), minGroupSize);
-        List<List<String>> testClassesGroups = splitTestClasses(urls, classes, parameters);
+        List<List<String>> testClassesGroups = splitTestClasses(urls, testClassNames, parameters);
         List<TestGroupEntity> testGroups = new ArrayList<>();
         for (int i = 0; i < testClassesGroups.size(); i++) {
             List<String> testClasses = testClassesGroups.get(i);
             String groupName = testGroupName + "-" + (i + 1);
-            getLog().info("Test group " + groupName + ": " + testClasses);
+            if (!testClasses.isEmpty()) {
+                getLog().info("Test group " + groupName + ": " + testClasses);
+            }
             testGroups.add(new TestGroupEntity()
                     .setName(groupName)
                     .setTestClasses(testClasses));
