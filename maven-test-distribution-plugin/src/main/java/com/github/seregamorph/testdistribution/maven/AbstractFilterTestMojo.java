@@ -41,6 +41,11 @@ public abstract class AbstractFilterTestMojo extends AbstractMojo {
             return;
         }
 
+        if (!buildDir.exists()) {
+            getLog().warn("Build directory " + buildDir + " does not exist, skipping test classes filtering");
+            return;
+        }
+
         File testDistributionFile = new File(buildDir, "test-distribution-" + testGroupName + ".json");
         getLog().info("Reading test distribution file: " + testDistributionFile);
         TestDistributionEntity entity = JsonUtils.readEntity(testDistributionFile);

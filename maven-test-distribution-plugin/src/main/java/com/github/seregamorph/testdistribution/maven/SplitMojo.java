@@ -85,6 +85,11 @@ public class SplitMojo extends AbstractMojo {
             return;
         }
 
+        if (!buildDir.exists()) {
+            getLog().warn("Build directory " + buildDir + " does not exist, skipping test classes distribution");
+            return;
+        }
+
         if (includes.isEmpty()) {
             throw new MojoExecutionException("Plugin configuration should declare `includes` parameter with class name filtering");
         }
