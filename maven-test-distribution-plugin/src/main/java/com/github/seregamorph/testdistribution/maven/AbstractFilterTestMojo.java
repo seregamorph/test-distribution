@@ -33,12 +33,12 @@ public abstract class AbstractFilterTestMojo extends AbstractMojo {
     @Override
     public void execute() throws MojoFailureException {
         if (skip) {
-            getLog().info("Skipping test distribution filtering");
+            getLog().info("Skipping test distribution filtering for " + getModuleName());
             return;
         }
 
         if (!"jar".equals(project.getPackaging())) {
-            getLog().info("Test distribution filtering is only supported for jar packaging");
+            getLog().info("Skipping distribution filtering for " + project.getPackaging() + " packaging");
             return;
         }
 
@@ -71,6 +71,10 @@ public abstract class AbstractFilterTestMojo extends AbstractMojo {
         } else {
             project.getProperties().put(getTestFilterPropertyName(), testFilter);
         }
+    }
+
+    private String getModuleName() {
+        return project.getGroupId() + ":" + project.getArtifactId();
     }
 
     abstract String getTestFilterPropertyName();
