@@ -62,11 +62,11 @@ public abstract class AbstractFilterTestMojo extends AbstractMojo {
         List<String> testClasses = testGroup.getTestClasses();
         String projectName = project.getGroupId() + ":" + project.getArtifactId();
         getLog().info("Filtering test group " + projectName + " " + testGroup.getName() + ": "
-                + (testClasses.isEmpty() ? "none" : testClasses));
+                + (testClasses.isEmpty() ? "none (skip)" : Utils.getSimpleClassNames(testClasses)));
 
         String testFilter = String.join(",", testClasses);
         if (testFilter.isEmpty()) {
-            // Empty property is ignored, so we need to use "skipTests" or "skipITs"
+            // Empty test filter property is ignored, so we need to use "skipTests" or "skipITs"
             project.getProperties().put(getSkipTestPropertyName(), "true");
         } else {
             project.getProperties().put(getTestFilterPropertyName(), testFilter);

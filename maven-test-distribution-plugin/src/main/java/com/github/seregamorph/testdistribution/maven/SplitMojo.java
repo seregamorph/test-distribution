@@ -122,7 +122,7 @@ public class SplitMojo extends AbstractMojo {
             List<String> testClasses = testClassesGroups.get(i);
             String groupName = testGroupName + "-" + (i + 1);
             if (!testClasses.isEmpty()) {
-                getLog().info("Test group " + groupName + ": " + testClasses);
+                getLog().info("Test group " + groupName + ": " + Utils.getSimpleClassNames(testClasses));
             }
             testGroups.add(new TestGroupEntity()
                     .setName(groupName)
