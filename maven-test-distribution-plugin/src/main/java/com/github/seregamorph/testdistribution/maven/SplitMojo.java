@@ -52,7 +52,7 @@ public class SplitMojo extends AbstractMojo {
     @Parameter(property = "testDistribution.split.skip")
     private boolean skip = false;
 
-    @Parameter(required = true, property = "testDistribution.includes")
+    @Parameter(property = "testDistribution.includes")
     private List<String> includes;
 
     @Parameter(property = "testDistribution.excludes")
@@ -64,10 +64,10 @@ public class SplitMojo extends AbstractMojo {
     @Parameter(property = "testDistribution.distributionProvider")
     private String distributionProvider = SimpleDistributionProvider.class.getName();
 
-    @Parameter(required = true, property = "testDistribution.testGroupName")
+    @Parameter(property = "testDistribution.testGroupName")
     private String testGroupName;
 
-    @Parameter(required = true, property = "testDistribution.numGroups")
+    @Parameter(property = "testDistribution.numGroups")
     private int numGroups;
 
     @Parameter(property = "testDistribution.minGroupSize")
@@ -90,7 +90,11 @@ public class SplitMojo extends AbstractMojo {
             return;
         }
 
-        if (includes.isEmpty()) {
+        if (testGroupName == null || testGroupName.isEmpty()) {
+            throw new MojoExecutionException("Plugin configuration should declare `testGroupName` parameter");
+        }
+
+        if (includes == null || includes.isEmpty()) {
             throw new MojoExecutionException("Plugin configuration should declare `includes` parameter with class name filtering");
         }
 

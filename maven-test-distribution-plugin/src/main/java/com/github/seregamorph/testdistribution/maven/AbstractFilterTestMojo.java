@@ -1,7 +1,7 @@
 package com.github.seregamorph.testdistribution.maven;
 
 import org.apache.maven.plugin.AbstractMojo;
-import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
 
@@ -31,7 +31,7 @@ public abstract class AbstractFilterTestMojo extends AbstractMojo {
     private int groupNumber;
 
     @Override
-    public void execute() throws MojoFailureException {
+    public void execute() throws MojoExecutionException {
         if (skip) {
             getLog().info("Skipping test distribution filtering for " + getModuleName());
             return;
@@ -48,11 +48,11 @@ public abstract class AbstractFilterTestMojo extends AbstractMojo {
         }
 
         if (testGroupName == null || testGroupName.isEmpty()) {
-            throw new MojoFailureException("Plugin configuration should declare `testGroupName` parameter");
+            throw new MojoExecutionException("Plugin configuration should declare `testGroupName` parameter");
         }
 
         if (groupNumber <= 0) {
-            throw new MojoFailureException("Plugin configuration should declare `groupNumber` parameter with value greater than 0");
+            throw new MojoExecutionException("Plugin configuration should declare `groupNumber` parameter with value greater than 0");
         }
 
         File testDistributionFile = new File(buildDir, "test-distribution-" + testGroupName + ".json");
