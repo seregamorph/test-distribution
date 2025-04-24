@@ -143,9 +143,9 @@ public class SplitMojo extends AbstractMojo {
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
         ClassLoader pluginClassLoader = SplitMojo.class.getClassLoader();
         try (URLClassLoader classLoader = new URLClassLoader(urls.toArray(new URL[0]), pluginClassLoader)) {
+            Thread.currentThread().setContextClassLoader(classLoader);
             Class<? extends DistributionProvider> distributionProviderClass = classLoader.loadClass(distributionProvider).asSubclass(DistributionProvider.class);
 
-            Thread.currentThread().setContextClassLoader(classLoader);
             DistributionProvider distributionProvider = distributionProviderClass.getConstructor().newInstance();
             return distributionProvider.split(testClasses, parameters);
         } catch (IOException | ReflectiveOperationException e) {
