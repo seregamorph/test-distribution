@@ -10,6 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 
+/**
+ * @author Sergey Chernov
+ */
 final class JsonUtils {
 
     private static final ObjectMapper MAPPER = new ObjectMapper()

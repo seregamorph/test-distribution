@@ -3,6 +3,9 @@ package com.github.seregamorph.testdistribution.maven;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @author Sergey Chernov
+ */
 final class Utils {
 
     static List<String> getSimpleClassNames(List<String> testClasses) {

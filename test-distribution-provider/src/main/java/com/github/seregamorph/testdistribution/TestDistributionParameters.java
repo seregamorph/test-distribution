@@ -1,5 +1,8 @@
 package com.github.seregamorph.testdistribution;
 
+/**
+ * @author Sergey Chernov
+ */
 public class TestDistributionParameters {
 
     private final int numGroups;

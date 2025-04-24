@@ -2,6 +2,9 @@ package com.github.seregamorph.testdistribution.maven;
 
 import java.util.List;
 
+/**
+ * @author Sergey Chernov
+ */
 public class TestGroupEntity {
 
     private String name;
