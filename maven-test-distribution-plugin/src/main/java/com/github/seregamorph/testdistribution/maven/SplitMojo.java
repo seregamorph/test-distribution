@@ -71,7 +71,7 @@ public class SplitMojo extends AbstractMojo {
     private int numGroups;
 
     @Parameter(property = "testDistribution.minGroupSize")
-    private int minGroupSize = 1;
+    private int minGroupSize = 32;
 
     @Override
     public void execute() throws MojoExecutionException {
