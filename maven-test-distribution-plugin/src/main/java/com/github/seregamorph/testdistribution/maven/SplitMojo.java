@@ -81,12 +81,7 @@ public class SplitMojo extends AbstractMojo {
         }
 
         if (!"jar".equals(project.getPackaging())) {
-            getLog().info("Test distribution split is only supported for jar packaging");
-            return;
-        }
-
-        if (!buildDir.exists()) {
-            getLog().warn("Build directory " + buildDir + " does not exist, skipping test classes distribution");
+            getLog().info("Skipping distribution split for " + project.getPackaging() + " packaging");
             return;
         }
 
@@ -100,6 +95,11 @@ public class SplitMojo extends AbstractMojo {
 
         if (numGroups <= 0) {
             throw new MojoExecutionException("Plugin configuration should declare `numGroups` parameter with value greater than 0");
+        }
+
+        if (!buildDir.exists()) {
+            getLog().info("Creating build directory " + buildDir);
+            buildDir.mkdir();
         }
 
         getLog().info("Distributing test classes from " + testClassesDirectory + ", includes " + includes
