@@ -61,9 +61,9 @@
     </properties>
 
     <modules>
-        <module>maven-test-distribution-plugin</module>
-        <module>test-distribution-spring-provider</module>
+        <module>test-distribution-maven-plugin</module>
         <module>test-distribution-provider</module>
+        <module>test-distribution-spring-provider</module>
     </modules>
 
     <build>

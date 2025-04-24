@@ -29,7 +29,7 @@ The test distribution is build cache compatible, because calculated test groups 
         <plugins>
             <plugin>
                 <groupId>com.github.seregamorph</groupId>
-                <artifactId>maven-test-distribution-plugin</artifactId>
+                <artifactId>test-distribution-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>unit-test-split</id>
@@ -56,7 +56,7 @@ The test distribution is build cache compatible, because calculated test groups 
         <plugins>
             <plugin>
                 <groupId>com.github.seregamorph</groupId>
-                <artifactId>maven-test-distribution-plugin</artifactId>
+                <artifactId>test-distribution-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>unit-test-filter</id>
