@@ -30,6 +30,7 @@ The test distribution is build cache compatible, because calculated test groups 
             <plugin>
                 <groupId>com.github.seregamorph</groupId>
                 <artifactId>test-distribution-maven-plugin</artifactId>
+                <version>${test-distribution.version}</version>
                 <executions>
                     <execution>
                         <id>unit-test-split</id>
@@ -38,11 +39,34 @@ The test distribution is build cache compatible, because calculated test groups 
                         </goals>
                         <configuration>
                             <includes>
+                                <!--Note: includes *.kt-->
                                 <include>**/*Test.java</include>
+                                <include>**/*Tests.java</include>
                             </includes>
-                            <numGroups>4</numGroups>
+                            <numGroups>${unitTestGroups}</numGroups>
                             <testGroupName>unit-test</testGroupName>
-                            <!-- distributionProvider parameter allows to specify the custom Provider -->
+                            <minGroupSize>64</minGroupSize>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>integration-test-split</id>
+                        <goals>
+                            <goal>split</goal>
+                        </goals>
+                        <configuration>
+                            <includes>
+                                <!--Note: includes *.kt-->
+                                <include>**/*IT.java</include>
+                            </includes>
+                            <numGroups>${integrationTestGroups}</numGroups>
+                            <testGroupName>integration-test</testGroupName>
+                            <minGroupSize>16</minGroupSize>
+                            <!--
+                            In case if SpringDistributionProvider used, don't forget to add
+                            "com.github.seregamorph:test-distribution-spring-provider:${test-distribution.version}"
+                            dependency to the test classpath of your module
+                            -->
+                            <distributionProvider>com.github.seregamorph.testdistribution.spring.SpringDistributionProvider</distributionProvider>
                         </configuration>
                     </execution>
                 </executions>
@@ -57,6 +81,7 @@ The test distribution is build cache compatible, because calculated test groups 
             <plugin>
                 <groupId>com.github.seregamorph</groupId>
                 <artifactId>test-distribution-maven-plugin</artifactId>
+                <version>${test-distribution.version}</version>
                 <executions>
                     <execution>
                         <id>unit-test-filter</id>
@@ -65,7 +90,17 @@ The test distribution is build cache compatible, because calculated test groups 
                         </goals>
                         <configuration>
                             <testGroupName>unit-test</testGroupName>
-                            <groupNumber>${unit-test.group}</groupNumber>
+                            <groupNumber>${unitTestGroup}</groupNumber>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>integration-test-filter</id>
+                        <goals>
+                            <goal>filter-integration-test</goal>
+                        </goals>
+                        <configuration>
+                            <testGroupName>integration-test</testGroupName>
+                            <groupNumber>${integrationTestGroup}</groupNumber>
                         </configuration>
                     </execution>
                 </executions>
@@ -73,4 +108,23 @@ The test distribution is build cache compatible, because calculated test groups 
         </plugins>
     </build>
 </profile>
+```
+
+To generate distributions locally:
+```shell
+./mvnw clean install -DskipTests=true -P tests-distribution-split -DintegrationTestGroups=10 -DunitTestGroups=10
+```
+Then you can run partial unit tests:
+```shell
+./mvnw test-distribution:filter-test@unit-test-filter \
+    surefire:test \
+    -P tests-distribution-filter \
+    -DunitTestGroup=1
+```
+or integration tests
+```shell
+./mvnw test-distribution:filter-integration-test@integration-test-filter \
+    failsafe:integration-test failsafe:verify \
+    -P tests-distribution-filter \
+    -DintegrationTestGroup=1
 ```
