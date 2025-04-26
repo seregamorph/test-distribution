@@ -28,8 +28,10 @@ public class SpringDistributionProvider implements DistributionProvider {
 
     @Override
     public List<List<String>> split(List<String> testClassNames, TestDistributionParameters parameters) {
-        if (testClassNames.isEmpty()) {
-            logger.info("No matching test classes found in the classpath");
+        if (testClassNames.size() <= parameters.getMinGroupSize()) {
+            if (!testClassNames.isEmpty()) {
+                logger.info("Using default distribution for {} test classes", testClassNames.size());
+            }
             return new SimpleDistributionProvider().split(testClassNames, parameters);
         }
 
