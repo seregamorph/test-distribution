@@ -1,4 +1,8 @@
-# test-distribution
+
+[![Maven Central Version](https://img.shields.io/maven-central/v/com.github.seregamorph/test-distribution?style=flat-square)](https://central.sonatype.com/artifact/com.github.seregamorph/test-distribution/overview)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
+# Test distribution
 Dynamic Test Distribution allows to split test suite of unit or integration tests to separate parts for individual
 execution. There can be different split criteria like simple split to N groups, split with weights (TODO),
 split by spring context configuration for integration test or custom.
