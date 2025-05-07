@@ -2,6 +2,7 @@ package com.github.seregamorph.testdistribution;
 
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class SimpleDistributionProviderTest {
 
     private static final DistributionProvider DISTRIBUTION_PROVIDER = new SimpleDistributionProvider();
+
+    private static final File modulePath = new File("");
 
     @Test
     public void shouldSplitMinSize1() {
@@ -38,10 +41,10 @@ class SimpleDistributionProviderTest {
     }
 
     private static TestDistributionParameters params1(int numGroups) {
-        return new TestDistributionParameters(numGroups, "test", 1);
+        return new TestDistributionParameters(numGroups, "test", modulePath, 1);
     }
 
     private static TestDistributionParameters params3(int numGroups) {
-        return new TestDistributionParameters(numGroups, "test", 3);
+        return new TestDistributionParameters(numGroups, "test", modulePath, 3);
     }
 }

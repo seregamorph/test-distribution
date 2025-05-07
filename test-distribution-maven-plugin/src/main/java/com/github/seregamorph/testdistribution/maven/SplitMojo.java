@@ -115,7 +115,8 @@ public class SplitMojo extends AbstractMojo {
         if (initialSort) {
             Collections.sort(testClassNames);
         }
-        TestDistributionParameters parameters = new TestDistributionParameters(numGroups, getModuleName(), minGroupSize);
+        TestDistributionParameters parameters = new TestDistributionParameters(numGroups, getModuleName(),
+                project.getBasedir(), minGroupSize);
         List<List<String>> testClassesGroups = splitTestClasses(urls, testClassNames, parameters);
         List<TestGroupEntity> testGroups = new ArrayList<>();
         for (int i = 0; i < testClassesGroups.size(); i++) {

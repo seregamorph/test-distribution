@@ -1,5 +1,7 @@
 package com.github.seregamorph.testdistribution;
 
+import java.io.File;
+
 /**
  * @author Sergey Chernov
  */
@@ -7,11 +9,13 @@ public class TestDistributionParameters {
 
     private final int numGroups;
     private final String moduleName;
+    private final File modulePath;
     private final int minGroupSize;
 
-    public TestDistributionParameters(int numGroups, String moduleName, int minGroupSize) {
+    public TestDistributionParameters(int numGroups, String moduleName, File modulePath, int minGroupSize) {
         this.numGroups = numGroups;
         this.moduleName = moduleName;
+        this.modulePath = modulePath;
         this.minGroupSize = minGroupSize;
     }
 
@@ -30,6 +34,10 @@ public class TestDistributionParameters {
         return Math.abs(moduleName.hashCode() % numGroups);
     }
 
+    public File getModulePath() {
+        return modulePath;
+    }
+
     public int getMinGroupSize() {
         return minGroupSize;
     }
@@ -39,6 +47,7 @@ public class TestDistributionParameters {
         return "TestDistributionParameters{" +
                 "numGroups=" + numGroups +
                 ", moduleName='" + moduleName + '\'' +
+                ", modulePath=" + modulePath +
                 ", minGroupSize=" + minGroupSize +
                 '}';
     }
