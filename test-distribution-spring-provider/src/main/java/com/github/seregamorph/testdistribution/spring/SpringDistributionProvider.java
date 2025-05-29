@@ -1,19 +1,22 @@
 package com.github.seregamorph.testdistribution.spring;
 
+import static java.util.Comparator.comparing;
+
 import com.github.seregamorph.testdistribution.DistributionProvider;
 import com.github.seregamorph.testdistribution.SimpleDistributionProvider;
 import com.github.seregamorph.testdistribution.TestDistributionParameters;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.test.context.BootstrapUtilsHelper;
 import org.springframework.test.context.MergedContextConfiguration;
 import org.springframework.test.context.TestContextBootstrapper;
-
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-
-import static java.util.Comparator.comparing;
 
 /**
  * Test class distribution provider for Spring Integration tests based on calculated MergedContextConfiguration.
