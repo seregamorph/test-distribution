@@ -42,6 +42,11 @@
         <maven.compiler.testSource>17</maven.compiler.testSource>
         <maven.compiler.testTarget>17</maven.compiler.testTarget>
 
+        <!--
+        https://maven.apache.org/guides/mini/guide-reproducible-builds.html
+        -->
+        <project.build.outputTimestamp>2025-01-01T01:00:00Z</project.build.outputTimestamp>
+
         <maven.version>3.9.9</maven.version>
         <maven-compiler-plugin.version>3.12.1</maven-compiler-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
