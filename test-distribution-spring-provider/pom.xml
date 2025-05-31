@@ -10,6 +10,7 @@
 
     <artifactId>test-distribution-spring-provider</artifactId>
     <packaging>jar</packaging>
+    <name>test-distribution-spring-provider</name>
     <description>
         Test class distribution for Spring Integration tests
     </description>

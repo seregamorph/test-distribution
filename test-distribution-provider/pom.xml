@@ -10,6 +10,7 @@
 
     <artifactId>test-distribution-provider</artifactId>
     <packaging>jar</packaging>
+    <name>test-distribution-provider</name>
     <description>
         Test class separation logic which can be customized
     </description>
