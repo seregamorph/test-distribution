@@ -4,7 +4,7 @@
 
     <groupId>com.github.seregamorph</groupId>
     <artifactId>test-distribution</artifactId>
-    <version>0.8-SNAPSHOT</version>
+    <version>0.8</version>
     <packaging>pom</packaging>
 
     <name>test-distribution</name>
