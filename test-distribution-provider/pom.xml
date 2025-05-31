@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.github.seregamorph</groupId>
         <artifactId>test-distribution</artifactId>
-        <version>0.8-SNAPSHOT</version>
+        <version>0.9-SNAPSHOT</version>
     </parent>
 
     <artifactId>test-distribution-provider</artifactId>
