@@ -1,6 +1,7 @@
 
 [![Maven Central Version](https://img.shields.io/maven-central/v/com.github.seregamorph/test-distribution?style=flat-square)](https://central.sonatype.com/artifact/com.github.seregamorph/test-distribution/overview)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![Reproducible build](https://img.shields.io/badge/Reproducible_Builds-ok-green?lab)](https://shields.io/badges/reproducible-central-artifact)
 
 # Test distribution
 Dynamic Test Distribution allows to split test suite of unit or integration tests to separate parts for individual
