@@ -3,6 +3,19 @@ package com.github.seregamorph.testdistribution.maven;
 import com.github.seregamorph.testdistribution.DistributionProvider;
 import com.github.seregamorph.testdistribution.SimpleDistributionProvider;
 import com.github.seregamorph.testdistribution.TestDistributionParameters;
+import java.io.File;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.TreeSet;
+import java.util.stream.Collectors;
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -14,19 +27,6 @@ import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
 import org.apache.maven.surefire.api.testset.TestListResolver;
 import org.apache.maven.surefire.api.util.DefaultScanResult;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.TreeSet;
-import java.util.stream.Collectors;
 
 /**
  * This goal splits module test classes according to chosen {@link DistributionProvider} and writes the distribution
@@ -84,7 +84,7 @@ public class SplitMojo extends AbstractMojo {
             return;
         }
 
-        if (!"jar".equals(project.getPackaging())) {
+        if (!(Arrays.asList("jar", "maven-plugin")).contains(project.getPackaging())) {
             getLog().info("Skipping distribution split for " + project.getPackaging() + " packaging");
             return;
         }

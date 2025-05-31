@@ -1,12 +1,12 @@
 package com.github.seregamorph.testdistribution.maven;
 
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
-
-import java.io.File;
-import java.util.List;
 
 /**
  * The basic goal reads the generated test distribution part and applies according filtering property.
@@ -37,7 +37,7 @@ public abstract class AbstractFilterTestMojo extends AbstractMojo {
             return;
         }
 
-        if (!"jar".equals(project.getPackaging())) {
+        if (!(Arrays.asList("jar", "maven-plugin")).contains(project.getPackaging())) {
             getLog().info("Skipping distribution filtering for " + project.getPackaging() + " packaging");
             return;
         }
