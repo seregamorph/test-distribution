@@ -44,7 +44,7 @@ public class SpringDistributionProvider implements DistributionProvider {
             Class.forName("org.springframework.context.ApplicationContextAware", true,
                     SpringDistributionProvider.class.getClassLoader());
         } catch (ClassNotFoundException e) {
-            logger.info("Missing spring framework in the classpath, fallback to default provider");
+            logger.warn("Missing spring framework in the classpath, fallback to default provider");
             return new SimpleDistributionProvider().split(testClassNames, parameters);
         }
 
