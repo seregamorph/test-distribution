@@ -5,6 +5,7 @@ import static java.util.Comparator.comparing;
 import com.github.seregamorph.testdistribution.DistributionProvider;
 import com.github.seregamorph.testdistribution.SimpleDistributionProvider;
 import com.github.seregamorph.testdistribution.TestDistributionParameters;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -31,10 +32,7 @@ public class SpringDistributionProvider implements DistributionProvider {
 
     @Override
     public List<List<String>> split(List<String> testClassNames, TestDistributionParameters parameters) {
-        if (testClassNames.size() <= parameters.getMinGroupSize()) {
-            if (!testClassNames.isEmpty()) {
-                logger.info("Using default distribution for {} test classes", testClassNames.size());
-            }
+        if (testClassNames.size() <= 1) {
             return new SimpleDistributionProvider().split(testClassNames, parameters);
         }
 
@@ -86,7 +84,48 @@ public class SpringDistributionProvider implements DistributionProvider {
             }
         })).collect(Collectors.toList());
 
-        return new SimpleDistributionProvider().split(ClassUtils.classesToClassNames(sortedTestClasses), parameters);
+        // TODO find a way to configure
+        // Relation between initialization time cost vs reusing the same context cost
+        int separateContextClassMultiplier = 2;
+
+        Integer prevOrder = null;
+        // note: this list has repeated same class if it's cost is more than 1 (new context required)
+        List<Class<?>> flattenedClasses = new ArrayList<>();
+        for (Class<?> testClass : sortedTestClasses) {
+            Integer order = classToOrder.get(testClass);
+            if (order == null) {
+                // non-ITs
+                flattenedClasses.add(testClass);
+            } else if (order.equals(prevOrder)) {
+                // ITs: reusing context - cost x1
+                flattenedClasses.add(testClass);
+            } else {
+                // ITs: new context - cost x*separateContextClassMultiplier
+                prevOrder = order;
+                for (int i = 0; i < separateContextClassMultiplier; i++) {
+                    flattenedClasses.add(testClass);
+                }
+            }
+        }
+
+        // note: this distribution has repeated same class if it's cost is more than 1 (new context required)
+        // plus possibly same classes in several groups
+        List<List<String>> flattenedDistribution = new SimpleDistributionProvider()
+            .split(ClassUtils.classesToClassNames(flattenedClasses), parameters);
+
+        List<List<String>> result = new ArrayList<>();
+        // to add to a group not more than once
+        Set<String> processedClasses = new LinkedHashSet<>();
+        for (List<String> group : flattenedDistribution) {
+            List<String> groupClasses = new ArrayList<>();
+            for (String className : group) {
+                if (processedClasses.add(className)) {
+                    groupClasses.add(className);
+                }
+            }
+            result.add(groupClasses);
+        }
+        return result;
     }
 
     /**
