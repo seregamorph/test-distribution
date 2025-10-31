@@ -77,6 +77,9 @@ public class SplitMojo extends AbstractMojo {
     @Parameter(property = "testDistribution.minGroupSize")
     private int minGroupSize = 32;
 
+    @Parameter(property = "testDistribution.shiftOffset")
+    private int shiftOffset = 0;
+
     @Override
     public void execute() throws MojoExecutionException {
         if (skip) {
@@ -120,7 +123,7 @@ public class SplitMojo extends AbstractMojo {
             Collections.sort(testClassNames);
         }
         TestDistributionParameters parameters = new TestDistributionParameters(numGroups, getModuleName(),
-                project.getBasedir(), minGroupSize);
+                project.getBasedir(), minGroupSize, shiftOffset);
         List<List<String>> testClassesGroups = splitTestClasses(urls, testClassNames, parameters);
         List<TestGroupEntity> testGroups = new ArrayList<>();
         for (int i = 0; i < testClassesGroups.size(); i++) {
