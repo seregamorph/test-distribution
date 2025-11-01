@@ -38,9 +38,9 @@ public class SpringDistributionProvider implements DistributionProvider {
 
         try {
             Class.forName("org.springframework.test.context.BootstrapUtils", true,
-                    SpringDistributionProvider.class.getClassLoader());
+                SpringDistributionProvider.class.getClassLoader());
             Class.forName("org.springframework.context.ApplicationContextAware", true,
-                    SpringDistributionProvider.class.getClassLoader());
+                SpringDistributionProvider.class.getClassLoader());
         } catch (ClassNotFoundException e) {
             logger.warn("Missing spring framework in the classpath, fallback to default provider");
             return new SimpleDistributionProvider().split(testClassNames, parameters);
@@ -59,7 +59,7 @@ public class SpringDistributionProvider implements DistributionProvider {
             // via orderCounter. initial order values all have a gap to allow for moving
             // @DirtiesContext annotated classes to the back later.
             TestClasses configurationTestClasses = configToTests.computeIfAbsent(mergedContextConfiguration,
-                    $ -> new TestClasses(orderCounter.incrementAndGet(), new LinkedHashSet<>()));
+                $ -> new TestClasses(orderCounter.incrementAndGet(), new LinkedHashSet<>()));
             configurationTestClasses.classes.add(itClass);
             classToOrder.put(itClass, configurationTestClasses.order);
         }
@@ -68,7 +68,7 @@ public class SpringDistributionProvider implements DistributionProvider {
             logger.info("Splitting {} test classes, none of them are integration tests", testClasses.size());
         } else {
             logger.info("Splitting {} test classes, {} IT classes are detected with {} separate configurations",
-                    testClasses.size(), itClasses.size(), configToTests.size());
+                testClasses.size(), itClasses.size(), configToTests.size());
         }
 
         List<Class<?>> sortedTestClasses = testClasses.stream().sorted(comparing(testClass -> {
@@ -84,10 +84,6 @@ public class SpringDistributionProvider implements DistributionProvider {
             }
         })).collect(Collectors.toList());
 
-        // TODO find a way to configure
-        // Relation between initialization time cost vs reusing the same context cost
-        int separateContextClassMultiplier = 2;
-
         Integer prevOrder = null;
         // note: this list has repeated same class if it's cost is more than 1 (new context required)
         List<Class<?>> flattenedClasses = new ArrayList<>();
@@ -102,6 +98,9 @@ public class SpringDistributionProvider implements DistributionProvider {
             } else {
                 // ITs: new context - cost x*separateContextClassMultiplier
                 prevOrder = order;
+                SpringTestDistribution springTestDistribution = testClass.getAnnotation(SpringTestDistribution.class);
+                int separateContextClassMultiplier = springTestDistribution == null
+                    ? 1 : springTestDistribution.separateContextClassMultiplier();
                 for (int i = 0; i < separateContextClassMultiplier; i++) {
                     flattenedClasses.add(testClass);
                 }
