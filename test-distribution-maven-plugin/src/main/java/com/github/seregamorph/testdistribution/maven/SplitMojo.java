@@ -13,7 +13,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import org.apache.maven.artifact.Artifact;
@@ -146,21 +148,55 @@ public class SplitMojo extends AbstractMojo {
         JsonUtils.writeEntity(testDistributionFile, entity);
     }
 
-    private List<List<String>> splitTestClasses(Collection<URL> urls, List<String> testClasses, TestDistributionParameters parameters) throws MojoExecutionException {
+    private List<List<String>> splitTestClasses(
+        Collection<URL> urls,
+        List<String> testClasses,
+        TestDistributionParameters parameters
+    ) throws MojoExecutionException {
         // todo support fork option
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
         ClassLoader pluginClassLoader = SplitMojo.class.getClassLoader();
         try (URLClassLoader classLoader = new URLClassLoader(urls.toArray(new URL[0]), pluginClassLoader)) {
             Thread.currentThread().setContextClassLoader(classLoader);
-            Class<? extends DistributionProvider> distributionProviderClass = classLoader.loadClass(distributionProvider).asSubclass(DistributionProvider.class);
+            Class<? extends DistributionProvider> distributionProviderClass = classLoader.loadClass(distributionProvider)
+                .asSubclass(DistributionProvider.class);
 
             DistributionProvider distributionProvider = distributionProviderClass.getConstructor().newInstance();
-            return distributionProvider.split(testClasses, parameters);
+            return verifyTestSplit(testClasses, parameters, distributionProvider);
         } catch (IOException | ReflectiveOperationException e) {
             throw new MojoExecutionException("Failed to split test classes", e);
         } finally {
             Thread.currentThread().setContextClassLoader(originalClassLoader);
         }
+    }
+
+    private static List<List<String>> verifyTestSplit(
+        List<String> testClasses,
+        TestDistributionParameters parameters,
+        DistributionProvider distributionProvider
+    ) {
+        List<List<String>> groups = distributionProvider.split(testClasses, parameters);
+        if (groups.size() != parameters.getNumGroups()) {
+            throw new IllegalArgumentException("Distribution provider returned " + groups.size() + " groups, " +
+                    "but expected " + parameters.getNumGroups());
+        }
+        Set<String> testClassesSet = new LinkedHashSet<>(testClasses);
+        for (int i = 0; i < groups.size(); i++) {
+            List<String> group = groups.get(i);
+            for (String testClassName : group) {
+                if (!testClassesSet.remove(testClassName)) {
+                    throw new IllegalArgumentException("Test class " + testClassName
+                        + " from group " + (i + 1)
+                        + " is not present in the discovered test classes list"
+                        + " or dumplicated");
+                }
+            }
+        }
+        if (!testClassesSet.isEmpty()) {
+            throw new IllegalArgumentException("Discovered Test classes " + testClassesSet
+                + " are not present in the distribution");
+        }
+        return groups;
     }
 
     private String getModuleName() {
