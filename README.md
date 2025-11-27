@@ -8,6 +8,8 @@ Dynamic Test Distribution allows to split test suite of unit or integration test
 execution. There can be different split criteria like simple split to N groups, split with weights (TODO),
 split by spring context configuration for integration test or custom.
 
+See [presentation slides](https://miro.com/app/board/uXjVJkbEMRs=/)
+
 ## Defining custom split rule
 Implement [DistributionProvider](test-distribution-provider/src/main/java/com/github/seregamorph/testdistribution/DistributionProvider.java).
 The implemented method receives the initial list of test classes in the suite, the number of groups and should return parts.
