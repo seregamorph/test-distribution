@@ -1,5 +1,6 @@
 package com.github.seregamorph.testdistribution;
 
+import static com.github.seregamorph.testdistribution.SimpleDistributionProvider.getEnclosingClassName;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
@@ -11,6 +12,14 @@ class SimpleDistributionProviderTest {
     private static final DistributionProvider DISTRIBUTION_PROVIDER = new SimpleDistributionProvider();
 
     private static final File modulePath = new File("");
+
+    @Test
+    public void shouldGetEnclosingClassName() {
+        assertEquals("Test1", getEnclosingClassName("Test1"));
+        assertEquals("Test1", getEnclosingClassName("Test1$NestedTest"));
+        assertEquals("org.example.Test1", getEnclosingClassName("org.example.Test1"));
+        assertEquals("org.example.Test1", getEnclosingClassName("org.example.Test1$NestedTest"));
+    }
 
     @Test
     public void shouldSplitMinSize1() {
