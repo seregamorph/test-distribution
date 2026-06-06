@@ -2,7 +2,10 @@ package com.github.seregamorph.testdistribution;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Simple distribution provider which splits the original list to N groups.
@@ -36,9 +39,27 @@ public class SimpleDistributionProvider implements DistributionProvider {
                 toExclusive = testClasses.size();
             }
             if (fromInclusive < toExclusive) {
-                groups.add(testClasses.subList(fromInclusive, toExclusive));
+                groups.add(new ArrayList<>(testClasses.subList(fromInclusive, toExclusive)));
             } else {
                 groups.add(Collections.emptyList());
+            }
+        }
+
+        // enclosing class name -> first group containing it
+        Map<String, List<String>> firstEnclosingGroup = new TreeMap<>();
+        for (List<String> group : groups) {
+            for (Iterator<String> iterator = group.iterator(); iterator.hasNext(); ) {
+                String testClassName = iterator.next();
+                String enclosingTestClassName = getEnclosingClassName(testClassName);
+                List<String> firstEclosingGroup = firstEnclosingGroup.get(enclosingTestClassName);
+                if (firstEclosingGroup == null) {
+                    firstEnclosingGroup.put(enclosingTestClassName, group);
+                } else if (firstEclosingGroup != group) {
+                    // put all classes with the same enclosing class to the same group
+                    // we need it to properly support behavior of surefire plugin
+                    iterator.remove();
+                    firstEclosingGroup.add(testClassName);
+                }
             }
         }
 
@@ -49,5 +70,14 @@ public class SimpleDistributionProvider implements DistributionProvider {
         result.addAll(groups.subList(0, bucketOffset));
 
         return result;
+    }
+
+    static String getEnclosingClassName(String fullClassName) {
+        int lastDot = fullClassName.lastIndexOf('.');
+        int firstDollar = fullClassName.indexOf('$', lastDot + 1);
+        if (firstDollar == -1) {
+            return fullClassName;
+        }
+        return fullClassName.substring(0, firstDollar);
     }
 }

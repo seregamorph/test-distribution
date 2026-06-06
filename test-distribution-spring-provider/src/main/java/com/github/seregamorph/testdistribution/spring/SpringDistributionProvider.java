@@ -132,7 +132,9 @@ public class SpringDistributionProvider implements DistributionProvider {
      * default.
      */
     protected int getNonItOrder() {
-        return 0;
+        // It seems to be more efficient to have high value than 0 for scenarios when there are a lot of
+        // nested test classes (in combination with grouping the distribution by enclosing class)
+        return Integer.MAX_VALUE;
     }
 
     private static Set<Class<?>> filterItClasses(List<Class<?>> testClasses) {

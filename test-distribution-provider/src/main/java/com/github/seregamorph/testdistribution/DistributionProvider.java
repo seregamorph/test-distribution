@@ -11,10 +11,11 @@ public interface DistributionProvider {
 
     /**
      * Distribute test classes to groups. Each subgroup should preserve the original order of test classes.
+     * All nested classes of the same enclosing class should be in the same subgroup.
      *
      * @param testClassNames
      * @param parameters
-     * @return list of size numGroups containing subsets of original testClasses
+     * @return list of size numGroups containing subsets of original testClasses, this collection should be mutable
      */
     List<List<String>> split(List<String> testClassNames, TestDistributionParameters parameters);
 }

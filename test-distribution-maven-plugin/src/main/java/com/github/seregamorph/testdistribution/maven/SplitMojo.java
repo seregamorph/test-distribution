@@ -67,6 +67,9 @@ public class SplitMojo extends AbstractMojo {
     @Parameter(property = "testDistribution.initialSort")
     private boolean initialSort = true;
 
+    @Parameter(property = "testDistribution.outputSort")
+    private boolean outputSort = true;
+
     @Parameter(property = "testDistribution.distributionProvider")
     private String distributionProvider = SimpleDistributionProvider.class.getName();
 
@@ -127,6 +130,11 @@ public class SplitMojo extends AbstractMojo {
         TestDistributionParameters parameters = new TestDistributionParameters(numGroups, getModuleName(),
                 project.getBasedir(), minGroupSize, shiftOffset);
         List<List<String>> testClassesGroups = splitTestClasses(urls, testClassNames, parameters);
+        if (outputSort) {
+            for (List<String> testClassGroup : testClassesGroups) {
+                Collections.sort(testClassGroup);
+            }
+        }
         List<TestGroupEntity> testGroups = new ArrayList<>();
         for (int i = 0; i < testClassesGroups.size(); i++) {
             List<String> testClasses = testClassesGroups.get(i);
@@ -188,7 +196,7 @@ public class SplitMojo extends AbstractMojo {
                     throw new IllegalArgumentException("Test class " + testClassName
                         + " from group " + (i + 1)
                         + " is not present in the discovered test classes list"
-                        + " or dumplicated");
+                        + " or duplicated");
                 }
             }
         }
