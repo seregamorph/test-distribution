@@ -4,7 +4,7 @@
 
     <groupId>com.github.seregamorph</groupId>
     <artifactId>test-distribution</artifactId>
-    <version>0.10-SNAPSHOT</version>
+    <version>0.11-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>test-distribution</name>
@@ -46,7 +46,7 @@
         <!--
         https://maven.apache.org/guides/mini/guide-reproducible-builds.html
         -->
-        <project.build.outputTimestamp>2025-01-01T01:00:00Z</project.build.outputTimestamp>
+        <project.build.outputTimestamp>2026-06-06T08:43:19Z</project.build.outputTimestamp>
 
         <maven.version>3.9.9</maven.version>
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
