@@ -67,9 +67,6 @@ public class SplitMojo extends AbstractMojo {
     @Parameter(property = "testDistribution.initialSort")
     private boolean initialSort = true;
 
-    @Parameter(property = "testDistribution.outputSort")
-    private boolean outputSort = true;
-
     @Parameter(property = "testDistribution.distributionProvider")
     private String distributionProvider = SimpleDistributionProvider.class.getName();
 
@@ -130,11 +127,6 @@ public class SplitMojo extends AbstractMojo {
         TestDistributionParameters parameters = new TestDistributionParameters(numGroups, getModuleName(),
                 project.getBasedir(), minGroupSize, shiftOffset);
         List<List<String>> testClassesGroups = splitTestClasses(urls, testClassNames, parameters);
-        if (outputSort) {
-            for (List<String> testClassGroup : testClassesGroups) {
-                Collections.sort(testClassGroup);
-            }
-        }
         List<TestGroupEntity> testGroups = new ArrayList<>();
         for (int i = 0; i < testClassesGroups.size(); i++) {
             List<String> testClasses = testClassesGroups.get(i);
@@ -170,7 +162,7 @@ public class SplitMojo extends AbstractMojo {
                 .asSubclass(DistributionProvider.class);
 
             DistributionProvider distributionProvider = distributionProviderClass.getConstructor().newInstance();
-            return verifyTestSplit(testClasses, parameters, distributionProvider);
+            return splitAndVerify(testClasses, parameters, distributionProvider);
         } catch (IOException | ReflectiveOperationException e) {
             throw new MojoExecutionException("Failed to split test classes", e);
         } finally {
@@ -178,7 +170,7 @@ public class SplitMojo extends AbstractMojo {
         }
     }
 
-    private static List<List<String>> verifyTestSplit(
+    private static List<List<String>> splitAndVerify(
         List<String> testClasses,
         TestDistributionParameters parameters,
         DistributionProvider distributionProvider

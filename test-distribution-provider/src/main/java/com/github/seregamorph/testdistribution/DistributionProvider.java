@@ -15,7 +15,7 @@ public interface DistributionProvider {
      *
      * @param testClassNames
      * @param parameters
-     * @return list of size numGroups containing subsets of original testClasses, this collection should be mutable
+     * @return list of size numGroups containing subsets of original testClasses
      */
     List<List<String>> split(List<String> testClassNames, TestDistributionParameters parameters);
 }

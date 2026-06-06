@@ -6,11 +6,13 @@ import com.github.seregamorph.testdistribution.DistributionProvider;
 import com.github.seregamorph.testdistribution.SimpleDistributionProvider;
 import com.github.seregamorph.testdistribution.TestDistributionParameters;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -44,6 +46,11 @@ public class SpringDistributionProvider implements DistributionProvider {
         } catch (ClassNotFoundException e) {
             logger.warn("Missing spring framework in the classpath, fallback to default provider");
             return new SimpleDistributionProvider().split(testClassNames, parameters);
+        }
+
+        Map<String, Integer> classNameToOrder = new TreeMap<>();
+        for (int i = 0; i < testClassNames.size(); i++) {
+            classNameToOrder.put(testClassNames.get(i), i);
         }
 
         List<Class<?>> testClasses = ClassUtils.classNamesToClasses(testClassNames, false);
@@ -124,6 +131,12 @@ public class SpringDistributionProvider implements DistributionProvider {
             }
             result.add(groupClasses);
         }
+
+        for (List<String> group : result) {
+            // to preserve original order
+            group.sort(Comparator.comparing(classNameToOrder::get));
+        }
+
         return result;
     }
 
